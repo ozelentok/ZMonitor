@@ -4,15 +4,16 @@ var ZMonitorRouter = Mn.AppRouter.extend({
 	},
 
 	initialize: function() {
-		this.monitorItems = new MonitorItems([
-			new MonitorItem({pk :0}),
-			new MonitorItem({pk: 1}),
-			new MonitorItem({pk: 2})]);
+		this.monitorItems = new MonitorItems();
 	},
 
 	zmonitor: function() {
-		this.showMonitorItems(this.monitorItems);
-		//this.monitorItems.fetch();
+		var self = this;
+		this.monitorItems.fetch({
+			success: function(model, response, options) {
+				self.showMonitorItems(self.monitorItems);
+			},
+		});
 	},
 
 	showMonitorItems: function(monitorItems) {

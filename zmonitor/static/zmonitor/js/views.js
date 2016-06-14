@@ -21,6 +21,6 @@ var MonitorItemsView = Mn.CompositeView.extend({
 	childViewContainer: "tbody",
 
 	onShow: function() {
-		$.bootstrapSortable();
+		$.bootstrapSortable(true);
 	}
 });
