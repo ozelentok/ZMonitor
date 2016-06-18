@@ -156,6 +156,11 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
     },
 }
 
@@ -171,3 +176,5 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+MONITOR_CONFIGURATION_FILE_PATH = os.environ.get('MONITOR_CONFIG_FILE', 'zmonitor.monitor_config')

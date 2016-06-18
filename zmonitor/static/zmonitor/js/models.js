@@ -7,8 +7,8 @@ var MonitorItem = Backbone.Model.extend({
 		name: '',
 		source: '',
 		description: false,
-		lastArrival: new Date(1970, 0),
-		lastUpdate: new Date(1970, 0),
+		last_arrival: new Date(1970, 0),
+		last_update: new Date(1970, 0),
 	},
 });
 

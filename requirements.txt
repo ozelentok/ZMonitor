@@ -1,0 +1,17 @@
+asgi-redis==0.13.1
+asgiref==0.13.3
+channels==0.14.1
+daphne==0.12.1
+Django==1.9.7
+django-crispy-forms==1.6.0
+django-filter==0.13.0
+django-appconf==1.0.2
+django-channels==0.6.0
+django-compressor==2.0
+djangorestframework==3.3.3
+rcssmin==1.0.6
+redis==2.10.5
+rjsmin==1.0.12
+six==1.10.0
+virtualenv==15.0.2
+websockets==3.1

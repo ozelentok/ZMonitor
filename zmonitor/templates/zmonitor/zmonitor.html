@@ -37,8 +37,8 @@
 			<td><%- name %></td>
 			<td><%- source %></td>
 			<td><%- description %></td>
-			<td data-dateformat="YYYY-MM-DD HH:mm:ss"><%- moment(lastArrival).format('YYYY-MM-DD HH:mm:ss') %></td>
-			<td data-dateformat="YYYY-MM-DD HH:mm:ss"><%- moment(lastUpdate).format('YYYY-MM-DD HH:mm:ss') %></td>
+			<td data-dateformat="YYYY-MM-DD HH:mm:ss"><%- moment(last_arrival).format('YYYY-MM-DD HH:mm:ss ZZ') %></td>
+			<td data-dateformat="YYYY-MM-DD HH:mm:ss"><%- moment(last_update).format('YYYY-MM-DD HH:mm:ss ZZ') %></td>
 		</script>
 		<script type="text/template" id="template-monitor-items">
 			<table class="table sortable">

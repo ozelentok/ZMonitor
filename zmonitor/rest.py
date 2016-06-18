@@ -6,7 +6,7 @@ class MonitorItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = MonitorItem
         fields = ('pk', 'name', 'source', 'description',
-                'lastArrival', 'lastUpdate')
+                'last_arrival', 'last_update', 'is_active')
 
 class MonitorItemViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = MonitorItemSerializer
