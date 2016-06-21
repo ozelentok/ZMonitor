@@ -15,7 +15,7 @@ class BaseMonitor(ABC):
 
     def __init__(self, name):
         self.name = name
-        self.status = 'No File Arrived'
+        self.status = ''
 
     @abstractmethod
     def check(self):
@@ -42,20 +42,59 @@ class FileExistenceMonitor(BaseMonitor):
     def __init__(self, name, glob_patterns):
         super().__init__(name)
         self._glob_patterns = glob_patterns
-        self._last_file_path = None
+        self.last_file_path = None
 
-    def check(self):
+    @property
+    def last_file_path(self):
+        return self._last_file_path
+
+    @last_file_path.setter
+    def last_file_path(self, value):
+        self._last_file_path = value
+
+    def get_newest_file_paths(self):
         files_found = []
         for glob_pattern in self._glob_patterns:
             files_found += glob.glob(glob_pattern)
         files_found.sort(key=os.path.getmtime)
+        return files_found
+
+    def check(self):
+        files_found = self.get_newest_file_paths()
         if len(files_found) == 0:
             return False
-        if files_found[-1] == self._last_file_path:
+        if files_found[-1] == self.last_file_path:
             return False
-        self._last_file_path = files_found[-1]
+        self.last_file_path = files_found[-1]
         self.status = 'File Arrived'
         return True
+
+class LogLinesMonitor(FileExistenceMonitor):
+
+    def __init__(self, name, glob_patterns, lines_meanings):
+        super().__init__(name, glob_patterns)
+        self._lines_meanings = lines_meanings
+        self._current_log_path = None
+
+    def check(self):
+        files_found = self.get_newest_file_paths()
+        if len(files_found) == 0:
+            return False
+        if files_found[-1] != self.last_file_path:
+            self._lines_read = 0
+            self.last_file_path = files_found[-1]
+
+        was_updated = False
+        with open(self.last_file_path, 'r') as log_file:
+            for line_num, line in enumerate(log_file):
+                if line_num < self._lines_read:
+                    continue
+                for line_meaning in self._lines_meanings:
+                    if line_meaning[0] in line:
+                        was_updated = True
+                        self.status = line_meaning[1]
+            self._lines_read = line_num
+        return was_updated
 
 class MonitorEngine:
 
@@ -88,7 +127,7 @@ class MonitorEngine:
         config = self.get_configuation()
         MonitorItem.objects.all().update(monitor_loaded=False)
         for monitor_config in config:
-            log.debug('registring {!r}'.format(monitor_config))
+            log.debug('Registering {!r}'.format(monitor_config))
             self.register_monitor(monitor_config)
         MonitorItem.objects.filter(monitor_loaded=False).delete()
 

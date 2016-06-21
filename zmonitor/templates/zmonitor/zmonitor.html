@@ -37,8 +37,19 @@
 			<td><%- name %></td>
 			<td><%- source %></td>
 			<td><%- description %></td>
-			<td data-dateformat="YYYY-MM-DD HH:mm:ss"><%- moment(last_arrival).format('YYYY-MM-DD HH:mm:ss ZZ') %></td>
-			<td data-dateformat="YYYY-MM-DD HH:mm:ss"><%- moment(last_update).format('YYYY-MM-DD HH:mm:ss ZZ') %></td>
+			<td><%- status %></td>
+			<% if (last_arrival) { %>
+				<td data-dateformat="YYYY-MM-DD HH:mm:ss"><%- moment(last_arrival).format('YYYY-MM-DD HH:mm:ss ZZ') %></td>
+			<% } else { %>
+				<td data-dateformat="YYYY-MM-DD HH:mm:ss">Did not arrive</td>
+			<% } %>
+
+			<% if (last_update) { %>
+				<td data-dateformat="YYYY-MM-DD HH:mm:ss"><%- moment(last_update).format('YYYY-MM-DD HH:mm:ss ZZ') %></td>
+			<% } else { %>
+				<td data-dateformat="YYYY-MM-DD HH:mm:ss">No update</td>
+			<% } %>
+			<td><%- arrival_interval %></td>
 		</script>
 		<script type="text/template" id="template-monitor-items">
 			<table class="table sortable">
@@ -48,8 +59,10 @@
 						<th>Name</th>
 						<th>Source</th>
 						<th>Description</th>
+						<th>Status</th>
 						<th>Last Arrival</th>
 						<th>Last Update</th>
+						<th>Arrival Interval</th>
 					</tr>
 				</thead>
 				<tbody>

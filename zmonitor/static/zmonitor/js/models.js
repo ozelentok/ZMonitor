@@ -9,6 +9,8 @@ var MonitorItem = Backbone.Model.extend({
 		description: false,
 		last_arrival: new Date(1970, 0),
 		last_update: new Date(1970, 0),
+		arrival_interval: 'No arrival interval set',
+		status: 'No status',
 	},
 });
 

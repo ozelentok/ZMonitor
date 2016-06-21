@@ -5,8 +5,8 @@ from .models import MonitorItem
 class MonitorItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = MonitorItem
-        fields = ('pk', 'name', 'source', 'description',
-                'last_arrival', 'last_update', 'is_active')
+        fields = ('pk', 'name', 'source', 'description', 'status',
+                'last_arrival', 'last_update', 'arrival_interval', 'is_active',)
 
 class MonitorItemViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = MonitorItemSerializer
