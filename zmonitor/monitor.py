@@ -5,9 +5,12 @@ import asyncio
 import threading
 import logging
 import importlib
+import json
 from django.utils import timezone
+from channels import Group
 from . import settings
 from .models import MonitorItem
+from .rest import MonitorItemSerializer
 
 log = logging.getLogger('zmonitor')
 
@@ -153,6 +156,7 @@ class MonitorEngine:
                 monitor_item.last_arrival = timezone.now()
                 monitor_item.status = monitor.status
             monitor_item.save()
+            Group('updates').send({'text': json.dumps(MonitorItemSerializer(monitor_item).data)})
             await asyncio.sleep(60)
 
     def get_configuation(self):
