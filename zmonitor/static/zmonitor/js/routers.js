@@ -7,7 +7,6 @@ var ZMonitorRouter = Mn.AppRouter.extend({
 		this.monitorItems = new MonitorItems();
 		var self = this;
 		this.socket = ZMonitorSocket(window.location.host, '/updates', function(evt) {
-			console.log('Data arrived from websocket server');
 			var item_updates = JSON.parse(evt.data);
 			var itemId = item_updates['pk'];
 			var item = self.monitorItems.get(itemId);

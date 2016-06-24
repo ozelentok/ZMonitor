@@ -82,7 +82,7 @@ class LogLinesMonitor(FileExistenceMonitor):
         glob_patterns (list): glob file paths to search
         lines_meanings (list): pairs of text to search in each line and the meaning of it if found
     '''
-    
+
     def __init__(self, name, glob_patterns, lines_meanings):
         super().__init__(name, glob_patterns)
         self._lines_meanings = lines_meanings
@@ -105,5 +105,5 @@ class LogLinesMonitor(FileExistenceMonitor):
                     if line_meaning[0] in line:
                         was_updated = True
                         self.status = line_meaning[1]
-            self._lines_read = line_num
+            self._lines_read = line_num + 1
         return was_updated
