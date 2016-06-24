@@ -3,6 +3,7 @@ import threading
 import logging
 import importlib
 import json
+import random
 from django.utils import timezone
 from channels import Group
 from . import settings
@@ -71,7 +72,7 @@ class MonitorEngine:
                 monitor_item.status = monitor.status
             monitor_item.save()
             Group('updates').send({'text': json.dumps(MonitorItemSerializer(monitor_item).data)})
-            await asyncio.sleep(60)
+            await asyncio.sleep(random.randint(40, 80))
 
     def get_configuation(self):
         config_file_path = settings.MONITOR_CONFIGURATION_FILE_PATH

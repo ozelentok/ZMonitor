@@ -29,6 +29,8 @@ function csrfSafeMethod(method) {
 	return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
 
+
+/* No need for CSRF Token in current app
 app.csrfToken = $.cookie('csrftoken');
 
 $.ajaxSetup({
@@ -38,6 +40,7 @@ $.ajaxSetup({
 		}
 	}
 });
+*/
 
 $(document).ready(function() {
 	app.start();
