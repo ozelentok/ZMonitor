@@ -10,9 +10,6 @@ var RootLayout = Mn.LayoutView.extend({
 var MonitorItemView = Mn.ItemView.extend({
 	tagName: 'tr',
 	template: '#template-monitor-item',
-	templateHelpers: {
-		moment: moment,
-	},
 	bindings: {
 		'.monitor-item-pk': 'pk',
 		'.monitor-item-name': 'name',
