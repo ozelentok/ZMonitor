@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import glob
 import os
+from datetime import datetime
 
 class BaseMonitor(ABC):
 
@@ -29,6 +30,12 @@ class BaseMonitor(ABC):
         self._status = value
 
 class FileExistenceMonitor(BaseMonitor):
+    '''
+    Monitor for file existence and creation
+    Args:
+        name (str): Monitor name
+        glob_patterns (list): glob file paths to search
+    '''
 
     def __init__(self, name, glob_patterns):
         super().__init__(name)
@@ -43,9 +50,16 @@ class FileExistenceMonitor(BaseMonitor):
     def last_file_path(self, value):
         self._last_file_path = value
 
+    def generate_current_glob_patterns(self):
+        DATE_FORMAT = '%Y%m%d'
+        DATE_SYMBOL = '$DATE'
+        return [pattern.replace(DATE_SYMBOL,
+            datetime.now().strftime(DATE_FORMAT))
+            for pattern in self._glob_patterns]
+
     def get_newest_file_paths(self):
         files_found = []
-        for glob_pattern in self._glob_patterns:
+        for glob_pattern in self.generate_current_glob_patterns():
             files_found += glob.glob(glob_pattern)
         files_found.sort(key=os.path.getmtime)
         return files_found
@@ -57,11 +71,18 @@ class FileExistenceMonitor(BaseMonitor):
         if files_found[-1] == self.last_file_path:
             return False
         self.last_file_path = files_found[-1]
-        self.status = 'File Arrived'
+        self.status = 'Last File: {}'.format(self.last_file_path)
         return True
 
 class LogLinesMonitor(FileExistenceMonitor):
-
+    '''
+    Monitor for log lines in log files
+    Args:
+        name (str): Monitor name
+        glob_patterns (list): glob file paths to search
+        lines_meanings (list): pairs of text to search in each line and the meaning of it if found
+    '''
+    
     def __init__(self, name, glob_patterns, lines_meanings):
         super().__init__(name, glob_patterns)
         self._lines_meanings = lines_meanings

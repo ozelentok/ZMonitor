@@ -17,6 +17,6 @@ config = [
             'arrival_interval': timedelta(seconds=20),
             'is_active': True,
             'monitor': 'LogLinesMonitor',
-            'monitor_params': (['/tmp/waka*.txt'], [('quack', 'Good a duck was here'), ('meow', 'Bad a cat was here')],)
+            'monitor_params': (['/tmp/$DATE/waka*.txt'], [('quack', 'Good a duck was here'), ('meow', 'Bad a cat was here')],)
         }
 ]
