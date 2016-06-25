@@ -45,8 +45,8 @@ class MonitorEngine:
         config = self.get_configuation()
         MonitorItem.objects.all().update(monitor_loaded=False)
         for monitor_config in config:
-            log.debug('Registering {!r}'.format(monitor_config))
             self.register_monitor(monitor_config)
+            log.debug('Monitor Registered: {}'.format(monitor_config['name']))
         MonitorItem.objects.filter(monitor_loaded=False).delete()
 
     def start(self):
@@ -71,7 +71,12 @@ class MonitorEngine:
                 monitor_item.last_arrival = timezone.now()
                 monitor_item.status = monitor.status
             monitor_item.save()
-            Group('updates').send({'text': json.dumps(MonitorItemSerializer(monitor_item).data)})
+            Group('updates').send({
+                'text': json.dumps({
+                    'type': 'item-change',
+                    'item-changes': MonitorItemSerializer(monitor_item).data,
+                })
+            })
             await asyncio.sleep(random.randint(40, 80))
 
     def get_configuation(self):

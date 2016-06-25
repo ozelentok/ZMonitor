@@ -5,13 +5,18 @@ var ZMonitorRouter = Mn.AppRouter.extend({
 
 	initialize: function() {
 		this.monitorItems = new MonitorItems();
+		this.initializeSocket();
+	},
+
+	initializeSocket: function() {
 		var self = this;
-		this.socket = ZMonitorSocket(window.location.host, '/updates', function(evt) {
-			var item_updates = JSON.parse(evt.data);
-			var itemId = item_updates['pk'];
-			var item = self.monitorItems.get(itemId);
-			item.set(item_updates);
-		});
+		this.socket = new ZMonitorSocket(window.location.host, '/updates', {
+			'item-change': function(message) {
+				var itemChanges = message['item-changes'];
+				var itemId = itemChanges.pk;
+				var item = self.monitorItems.get(itemId);
+				item.set(itemChanges);
+			}});
 	},
 
 	zmonitor: function() {
@@ -30,8 +35,67 @@ var ZMonitorRouter = Mn.AppRouter.extend({
 	},
 });
 
-var ZMonitorSocket = function(hostname, path, onMessage) {
+var ZMonitorSocket = function(hostname, path, messageHandlers) {
+	this.messageHandlers = messageHandlers;
+	this.socketHostname = hostname;
+	this.socketPath = path;
+	this.connect();
+};
+
+ZMonitorSocket.prototype.connect = function() {
 	var wsScheme = window.location.protocol == "https:" ? "wss" : "ws";
-	this.socket = new WebSocket(wsScheme + '://' + hostname + path);
-	this.socket.onmessage = onMessage;
-}
+	var self = this;
+	this.socket = new WebSocket(wsScheme + '://' + this.socketHostname + this.socketPath);
+	this.socket.onmessage = function(evt) {
+		self.onMessage(evt);
+	};
+	this.socket.onerror = function(evt) {
+		self.onError(evt);
+	};
+	this.initializeKeepAliveTimer();
+};
+
+ZMonitorSocket.prototype.initializeKeepAliveTimer = function() {
+	var KEEP_ALIVE_INTERVAL_MS = 60 * 1000;
+	var KEEP_ALIVE_TIMEOUT_MS = 180 * 1000;
+	var self = this;
+	this.lastSocketCommunication = new Date();
+	if (this.hasOwnProperty('keepAliveTimer')) {
+		clearInterval(this.keepAliveTimer);
+	}
+	this.keepAliveTimer = setInterval(function() {
+		var currentTime = new Date();
+		console.log(currentTime - self.lastSocketCommunication);
+		if (currentTime - self.lastSocketCommunication > KEEP_ALIVE_TIMEOUT_MS) {
+			console.debug('WebSocket disconnected, reconnecting');
+			self.connect();
+			return;
+		}
+		self.send({
+			'type': 'keep-alive',
+		});
+	}, KEEP_ALIVE_INTERVAL_MS);
+};
+
+ZMonitorSocket.prototype.onMessage = function(evt) {
+	console.log(evt);
+	var message = JSON.parse(evt.data);
+	var messageType = message.type;
+	this.lastSocketCommunication = new Date();
+	console.log(messageType);
+	if (messageType === 'keep-alive') {
+		return;
+	}
+	if (this.messageHandlers.hasOwnProperty(messageType)) {
+		this.messageHandlers[messageType](message);
+	}
+};
+
+ZMonitorSocket.prototype.onError = function(evt) {
+	clearInterval(this.keepAliveTimer);
+	alert('Failed to connect to server, please inform the administrator');
+};
+
+ZMonitorSocket.prototype.send = function(message) {
+	this.socket.send(JSON.stringify(message));
+};
