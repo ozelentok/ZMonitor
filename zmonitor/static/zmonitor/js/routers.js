@@ -65,7 +65,6 @@ ZMonitorSocket.prototype.initializeKeepAliveTimer = function() {
 	}
 	this.keepAliveTimer = setInterval(function() {
 		var currentTime = new Date();
-		console.log(currentTime - self.lastSocketCommunication);
 		if (currentTime - self.lastSocketCommunication > KEEP_ALIVE_TIMEOUT_MS) {
 			console.debug('WebSocket disconnected, reconnecting');
 			self.connect();
@@ -78,11 +77,9 @@ ZMonitorSocket.prototype.initializeKeepAliveTimer = function() {
 };
 
 ZMonitorSocket.prototype.onMessage = function(evt) {
-	console.log(evt);
 	var message = JSON.parse(evt.data);
 	var messageType = message.type;
 	this.lastSocketCommunication = new Date();
-	console.log(messageType);
 	if (messageType === 'keep-alive') {
 		return;
 	}
