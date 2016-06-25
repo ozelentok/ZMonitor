@@ -6,6 +6,13 @@ var RootLayout = Mn.LayoutView.extend({
 	},
 });
 
+Backbone.Stickit.addHandler({
+	selector: 'td',
+	afterUpdate: function($el) {
+		$el.css('opacity', 0.1);
+		$el.animate({'opacity': 1}, 1200);
+	},
+});
 
 var MonitorItemView = Mn.ItemView.extend({
 	tagName: 'tr',
