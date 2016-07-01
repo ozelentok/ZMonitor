@@ -3,6 +3,7 @@ var RootLayout = Mn.LayoutView.extend({
 
 	regions: {
 		main: '.app-root',
+		settings: '.app-settings',
 	},
 });
 
@@ -26,22 +27,14 @@ var MonitorItemView = Mn.ItemView.extend({
 		'.monitor-item-last-arrival': {
 			observe: ['last_arrival'],
 			onGet: function(values) {
-				if (!values[0]) {
-					return 'Did not arrive';
-				}
-				return Utils.formatDateTime(values[0]) + '\n' +
-					Utils.formatCurrentTimeDiff(values[0]) + ' ago';
+				return Utils.formatFullDateTime(values[0]);
 			},
 			initialize: 'onNewArrival',
 		},
 		'.monitor-item-last-update': {
 			observe: ['last_update'],
 			onGet: function(values) {
-				if (!values[0]) {
-					return 'No update';
-				}
-				return Utils.formatDateTime(values[0]) + '\n' +
-					Utils.formatCurrentTimeDiff(values[0]) + ' ago';
+				return Utils.formatFullDateTime(values[0]);
 			},
 			initialize: 'onNewUpdate',
 			afterUpdate: 'onNewUpdate',
@@ -66,8 +59,12 @@ var MonitorItemView = Mn.ItemView.extend({
 		} else if (msDiff <= 1.2 * timeIntervalMs) {
 			$el.css('color', '#007777');
 		} else {
-			//Utils.showNotification(this.model.get('name') + ' has not arrived', {
 			$el.css('color', '#FF0000');
+			if (app.settings.get('notificationsEnabled')) {
+				var title = this.model.get('name') + ' has not arrived';
+				var body = 'Last arrived at: ' + Utils.formatFullDateTime(this.model.get('last_arrival'));
+				Utils.showNotification(title, body);
+			}
 		}
 	},
 	onNewUpdate: function($el) {
@@ -89,8 +86,8 @@ var MonitorItemsView = Mn.CompositeView.extend({
 	childViewContainer: 'tbody',
 
 	initialize: function(){
-    this.collection = this.model.get('monitorItems');
-  },
+		this.collection = this.model.get('monitorItems');
+	},
 
 });
 
@@ -99,5 +96,32 @@ var MonitorGroupsView = Mn.CollectionView.extend({
 
 	onShow: function() {
 		$.bootstrapSortable(true);
+	}
+});
+
+var AppSettingsView = Mn.ItemView.extend({
+	template: '#template-app-settings',
+
+	ui: {
+		notificationsSwitch: '.settings-notifications',
+	},
+
+	events: {
+		'switchChange.bootstrapSwitch': function(evt, state) {
+			var self = this;
+			Utils.requestNotificationsPermissions(function(permissionGranted) {
+				if (!permissionGranted) {
+					self.ui.notificationsSwitch.bootstrapSwitch('state', false, true);
+					return;
+				}
+				self.model.save({
+					'notificationsEnabled': state
+				});
+			});
+		},
+	},
+
+	onShow: function() {
+		this.ui.notificationsSwitch.bootstrapSwitch('state', this.model.get('notificationsEnabled'), true);
 	}
 });

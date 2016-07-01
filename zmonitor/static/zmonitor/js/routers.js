@@ -5,6 +5,7 @@ var ZMonitorRouter = Mn.AppRouter.extend({
 
 	initialize: function() {
 		this.monitorItems = new MonitorItems();
+		this.settings = new AppSettings();
 		this.initializeSocket();
 	},
 
@@ -22,9 +23,28 @@ var ZMonitorRouter = Mn.AppRouter.extend({
 	zmonitor: function() {
 		var self = this;
 		this.monitorItems.fetch({
-			success: function(model, response, options) {
+			success: function() {
+				self.showAppSettings();
 				self.showMonitorItems(self.monitorItems);
 			},
+		});
+	},
+
+	showAppSettings: function() {
+		var self = this;
+		app.settings = this.settings;
+		this.settings.fetch({
+			success: function() {
+				app.root.showChildView('settings', new AppSettingsView({
+					model: self.settings,
+				}));
+			},
+			error: function(model, response, options) {
+				self.settings.save();
+				app.root.showChildView('settings', new AppSettingsView({
+					model: self.settings,
+				}));
+			}
 		});
 	},
 

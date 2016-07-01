@@ -41,6 +41,14 @@ Utils.formatCurrentTimeDiff = function(dateTimeValue) {
 	return this.formatTimeDiff(timeDiff);
 };
 
+Utils.formatFullDateTime = function(dateTimeValue) {
+	if (!dateTimeValue) {
+		return 'N/A';
+	}
+	return Utils.formatDateTime(dateTimeValue) + '\n' +
+		Utils.formatCurrentTimeDiff(dateTimeValue) + ' ago';
+};
+
 Utils.formatTimeDiff = function(timeDiffMs) {
 	var timeDiff = timeDiffMs / 1000;
 	if (timeDiff < 60 * 2) {
@@ -63,18 +71,22 @@ Utils.graduallyIncreaseOpacity = function($el) {
 	$el.animate({'opacity': 1}, 1200);
 };
 
-Utils.showNotification = function(title, options) {
+Utils.requestNotificationsPermissions = function(callback) {
 	if (!("Notification" in window)) {
-		return;
+		callback(false);
 	}
 
 	if (Notification.permission === "granted") {
-		var notification = new Notification(title, options);
-		return;
+		callback(true);
 	}
+
 	Notification.requestPermission(function (permission) {
-		if (permission === "granted") {
-			var notification = new Notification(title, options);
-		}
+		callback(permission === "granted");
+	});
+};
+
+Utils.showNotification = function(title, body) {
+	var notification = new Notification(title, {
+		'body': body,
 	});
 };
