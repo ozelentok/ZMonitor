@@ -17,22 +17,25 @@ Utils.formatDateTime = function(dateTimeValue) {
 };
 
 Utils.formatCurrentTimeDiff = function(dateTimeValue) {
-	var timeDiff = (Date.now() - moment(dateTimeValue)) / 1000
-		if (timeDiff < 1) {
-			return 'Just now'
-		} if (timeDiff < 60) {
-			return Math.round(timeDiff) + ' seconds ago';
-		}
-	timeDiff /= 60;
-	if (timeDiff < 60) {
-		return Math.round(timeDiff) + ' minutes ago';
+	var timeDiff = (Date.now() - moment(dateTimeValue));
+	return this.formatTimeDiff(timeDiff);
+};
+
+Utils.formatTimeDiff = function(timeDiffMs) {
+	var timeDiff = timeDiffMs / 1000;
+	if (timeDiff < 60 * 2) {
+		return Math.round(timeDiff) + ' seconds';
 	}
 	timeDiff /= 60;
-	if (timeDiff < 24) {
-		return Math.round(timeDiff) + ' hours ago';
+	if (timeDiff < 60 * 2) {
+		return Math.round(timeDiff) + ' minutes';
+	}
+	timeDiff /= 60;
+	if (timeDiff < 24 * 2) {
+		return Math.round(timeDiff) + ' hours';
 	}
 	timeDiff /= 24;
-	return Math.round(timeDiff) + ' days ago';
+	return Math.round(timeDiff) + ' days';
 };
 
 Utils.graduallyIncreaseOpacity = function($el) {

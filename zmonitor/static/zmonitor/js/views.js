@@ -28,29 +28,34 @@ var MonitorItemView = Mn.ItemView.extend({
 		'.monitor-item-status': 'status',
 		'.monitor-item-last-arrival': {
 			observe: ['last_arrival'],
-			onGet: function (values) {
-				if (values[0]) {
-					return Utils.formatDateTime(values[0]) + '\n' +
-						Utils.formatCurrentTimeDiff(values[0]);
+			onGet: function(values) {
+				if (!values[0]) {
+					return 'Did not arrive';
 				}
-				return 'Did not arrive';
+				return Utils.formatDateTime(values[0]) + '\n' +
+					Utils.formatCurrentTimeDiff(values[0]) + ' ago';
 			},
 			initialize: 'onNewArrival',
 			afterUpdate: 'onNewArrival',
 		},
 		'.monitor-item-last-update': {
 			observe: ['last_update'],
-			onGet: function (values) {
-				if (values[0]) {
-					return Utils.formatDateTime(values[0]) + '\n' +
-						Utils.formatCurrentTimeDiff(values[0]);
+			onGet: function(values) {
+				if (!values[0]) {
+					return 'No update';
 				}
-				return 'No update';
+				return Utils.formatDateTime(values[0]) + '\n' +
+					Utils.formatCurrentTimeDiff(values[0]) + ' ago';
 			},
 			initialize: 'onNewUpdate',
 			afterUpdate: 'onNewUpdate',
 		},
-		'.monitor-item-arrival-interval': 'arrival_interval',
+		'.monitor-item-arrival-interval': {
+			observe: 'arrival_interval',
+			onGet: function(values) {
+				return Utils.formatTimeDiff(Utils.timeIntervalToMs(values));
+			},
+		},
 	},
 	onRender: function() {
 		this.stickit();
@@ -61,11 +66,11 @@ var MonitorItemView = Mn.ItemView.extend({
 		var msDiff = Date.now() - lastArrival;
 		var timeIntervalMs = Utils.timeIntervalToMs(this.model.get('arrival_interval'));
 		if (msDiff <= timeIntervalMs) {
-			$el.css('color', '#0099FF');
+			$el.css('color', '#0044FF');
 		} else if (msDiff <= 2 * timeIntervalMs) {
-			$el.css('color', '#99FF00');
+			$el.css('color', '#007777');
 		} else {
-			$el.css('color', '#FF3300');
+			$el.css('color', '#FF0000');
 		}
 	},
 	onNewUpdate: function($el) {
@@ -73,13 +78,12 @@ var MonitorItemView = Mn.ItemView.extend({
 		var lastUpdate = moment(this.model.get('last_update'));
 		var msDiff = Date.now() - lastUpdate;
 		if (msDiff <= 5 * 60 * 1000) {
-			$el.css('color', '#0099FF');
+			$el.css('color', '#0044FF');
 		} else {
-			$el.css('color', '#FF3300');
+			$el.css('color', '#FF0000');
 		}
-		this.onNewArrival(this.ui.itemLastArrival);
+		this.model.trigger('change:last_arrival');
 	},
-
 });
 
 var MonitorItemsView = Mn.CompositeView.extend({
