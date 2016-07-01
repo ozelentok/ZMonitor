@@ -17,11 +17,11 @@ Utils.timeIntervalToMs =  function(timeDiff) {
 	var minutes = patternMatch[3 - matchesOffset];
 	var seconds = patternMatch[4 - matchesOffset];
 	return Utils.timeMeasurmentsToMs(
-		parseInt(days, 10),
-		parseInt(hours, 10),
-		parseInt(minutes, 10),
-		parseInt(seconds, 10)
-	);
+			parseInt(days, 10),
+			parseInt(hours, 10),
+			parseInt(minutes, 10),
+			parseInt(seconds, 10)
+			);
 };
 
 Utils.timeMeasurmentsToMs = function(days, hours, minutes, seconds) {
@@ -61,4 +61,20 @@ Utils.formatTimeDiff = function(timeDiffMs) {
 Utils.graduallyIncreaseOpacity = function($el) {
 	$el.css('opacity', 0.1);
 	$el.animate({'opacity': 1}, 1200);
+};
+
+Utils.showNotification = function(title, options) {
+	if (!("Notification" in window)) {
+		return;
+	}
+
+	if (Notification.permission === "granted") {
+		var notification = new Notification(title, options);
+		return;
+	}
+	Notification.requestPermission(function (permission) {
+		if (permission === "granted") {
+			var notification = new Notification(title, options);
+		}
+	});
 };

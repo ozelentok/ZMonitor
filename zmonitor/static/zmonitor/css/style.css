@@ -11,3 +11,7 @@ tr:nth-child(even) {
 	font-weight: bold;
 	white-space: pre-line;
 }
+
+.panel-body {
+	padding: 0;
+}

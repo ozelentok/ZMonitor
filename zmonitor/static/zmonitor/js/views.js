@@ -17,9 +17,6 @@ Backbone.Stickit.addHandler(OpacityViewHandler);
 var MonitorItemView = Mn.ItemView.extend({
 	tagName: 'tr',
 	template: '#template-monitor-item',
-	ui: {
-		'itemLastArrival': '.monitor-item-last-arrival',
-	},
 	bindings: {
 		'.monitor-item-pk': 'pk',
 		'.monitor-item-name': 'name',
@@ -36,7 +33,6 @@ var MonitorItemView = Mn.ItemView.extend({
 					Utils.formatCurrentTimeDiff(values[0]) + ' ago';
 			},
 			initialize: 'onNewArrival',
-			afterUpdate: 'onNewArrival',
 		},
 		'.monitor-item-last-update': {
 			observe: ['last_update'],
@@ -70,6 +66,7 @@ var MonitorItemView = Mn.ItemView.extend({
 		} else if (msDiff <= 1.2 * timeIntervalMs) {
 			$el.css('color', '#007777');
 		} else {
+			//Utils.showNotification(this.model.get('name') + ' has not arrived', {
 			$el.css('color', '#FF0000');
 		}
 	},
@@ -95,11 +92,12 @@ var MonitorItemsView = Mn.CompositeView.extend({
     this.collection = this.model.get('monitorItems');
   },
 
-	onShow: function() {
-		$.bootstrapSortable(true);
-	}
 });
 
 var MonitorGroupsView = Mn.CollectionView.extend({
 	childView: MonitorItemsView,
+
+	onShow: function() {
+		$.bootstrapSortable(true);
+	}
 });
