@@ -8,10 +8,8 @@ var RootLayout = Mn.LayoutView.extend({
 
 var OpacityViewHandler = {
 	selector: 'td',
-	afterUpdate: function($el) {
-		$el.css('opacity', 0.1);
-		$el.animate({'opacity': 1}, 1200);
-	},
+	initialize: Utils.graduallyIncreaseOpacity,
+	afterUpdate: Utils.graduallyIncreaseOpacity,
 };
 
 Backbone.Stickit.addHandler(OpacityViewHandler);
@@ -32,23 +30,24 @@ var MonitorItemView = Mn.ItemView.extend({
 			observe: ['last_arrival'],
 			onGet: function (values) {
 				if (values[0]) {
-					//return this.formatDateTime(values[0]);
-					return this.formatDateTime(values[0]) + '\n' +
-						this.formatCurrentTimeDiff(values[0]);
+					return Utils.formatDateTime(values[0]) + '\n' +
+						Utils.formatCurrentTimeDiff(values[0]);
 				}
 				return 'Did not arrive';
 			},
+			initialize: 'onNewArrival',
 			afterUpdate: 'onNewArrival',
 		},
 		'.monitor-item-last-update': {
 			observe: ['last_update'],
 			onGet: function (values) {
 				if (values[0]) {
-					return this.formatDateTime(values[0]) + '\n' +
-						this.formatCurrentTimeDiff(values[0]);
+					return Utils.formatDateTime(values[0]) + '\n' +
+						Utils.formatCurrentTimeDiff(values[0]);
 				}
 				return 'No update';
 			},
+			initialize: 'onNewUpdate',
 			afterUpdate: 'onNewUpdate',
 		},
 		'.monitor-item-arrival-interval': 'arrival_interval',
@@ -60,7 +59,7 @@ var MonitorItemView = Mn.ItemView.extend({
 		OpacityViewHandler.afterUpdate($el);
 		var lastArrival = moment(this.model.get('last_arrival'));
 		var msDiff = Date.now() - lastArrival;
-		var timeIntervalMs = this.timeIntervalToMs(this.model.get('arrival_interval'));
+		var timeIntervalMs = Utils.timeIntervalToMs(this.model.get('arrival_interval'));
 		if (msDiff <= timeIntervalMs) {
 			$el.css('color', '#0099FF');
 		} else if (msDiff <= 2 * timeIntervalMs) {
@@ -80,38 +79,7 @@ var MonitorItemView = Mn.ItemView.extend({
 		}
 		this.onNewArrival(this.ui.itemLastArrival);
 	},
-	timeIntervalToMs: function(timeDiff) {
-		var timePattern = /(\d{2}):(\d{2}):(\d{2})/;
-		var patternMatch = timePattern.exec(timeDiff);
-		if (patternMatch === null) {
-			throw Error('String does not contain a time difference');
-		}
-		var totalSeconds = parseInt(patternMatch[3], 10);
-		totalSeconds += parseInt(patternMatch[2], 10) * 60;
-		totalSeconds += parseInt(patternMatch[1], 10) * 3600;
-		return totalSeconds * 1000;
-	},
-	formatDateTime: function(dateTimeValue) {
-		return moment(dateTimeValue).format('YYYY-MM-DD HH:mm:ss ZZ');
-	},
-	formatCurrentTimeDiff: function(dateTimeValue) {
-		var timeDiff = (Date.now() - moment(dateTimeValue)) / 1000
-		if (timeDiff < 1) {
-			return 'Just now'
-		} if (timeDiff < 60) {
-			return Math.round(timeDiff) + ' seconds ago';
-		}
-		timeDiff /= 60;
-		if (timeDiff < 60) {
-			return Math.round(timeDiff) + ' minutes ago';
-		}
-		timeDiff /= 60;
-		if (timeDiff < 24) {
-			return Math.round(timeDiff) + ' hours ago';
-		}
-		timeDiff /= 24;
-		return Math.round(timeDiff) + ' days ago';
-	},
+
 });
 
 var MonitorItemsView = Mn.CompositeView.extend({
