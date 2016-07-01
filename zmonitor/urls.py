@@ -19,9 +19,11 @@ from django.contrib import admin
 from . import views
 from . import rest
 from . import monitor
+import sys
 
-monitor_engine = monitor.MonitorEngine()
-monitor_engine.start()
+if 'runserver' in sys.argv:
+    monitor_engine = monitor.MonitorEngine()
+    monitor_engine.start()
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),

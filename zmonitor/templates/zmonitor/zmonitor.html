@@ -33,6 +33,9 @@
 				</div>
 			</div>
 		</div>
+
+		<script type="text/template" id="template-monitor-groups">
+		</script>
 		<script type="text/template" id="template-monitor-item">
 			<td class="monitor-item-pk"></td>
 			<td class="monitor-item-name"></td>
@@ -44,6 +47,7 @@
 			<td class="monitor-item-arrival-interval"></td>
 		</script>
 		<script type="text/template" id="template-monitor-items">
+			<h2 class="monitor-group-name"><%- name %></h2>
 			<table class="table sortable">
 				<thead>
 					<tr>

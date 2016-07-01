@@ -67,7 +67,7 @@ var MonitorItemView = Mn.ItemView.extend({
 		var timeIntervalMs = Utils.timeIntervalToMs(this.model.get('arrival_interval'));
 		if (msDiff <= timeIntervalMs) {
 			$el.css('color', '#0044FF');
-		} else if (msDiff <= 2 * timeIntervalMs) {
+		} else if (msDiff <= 1.2 * timeIntervalMs) {
 			$el.css('color', '#007777');
 		} else {
 			$el.css('color', '#FF0000');
@@ -89,9 +89,17 @@ var MonitorItemView = Mn.ItemView.extend({
 var MonitorItemsView = Mn.CompositeView.extend({
 	template: '#template-monitor-items',
 	childView: MonitorItemView,
-	childViewContainer: "tbody",
+	childViewContainer: 'tbody',
+
+	initialize: function(){
+    this.collection = this.model.get('monitorItems');
+  },
 
 	onShow: function() {
 		$.bootstrapSortable(true);
 	}
+});
+
+var MonitorGroupsView = Mn.CollectionView.extend({
+	childView: MonitorItemsView,
 });

@@ -29,8 +29,15 @@ var ZMonitorRouter = Mn.AppRouter.extend({
 	},
 
 	showMonitorItems: function(monitorItems) {
-		app.root.showChildView('main', new MonitorItemsView({
-			collection: monitorItems,
+		var monitorGroupsRaw = monitorItems.groupBy('group_name');
+		var monitorGroups =_.map(monitorGroupsRaw, function(groupRaw, groupName) {
+			return new MonitorGroup({
+				'name': groupName,
+				'monitorItems': new MonitorItems(groupRaw),
+			});
+		});
+		app.root.showChildView('main', new MonitorGroupsView({
+			collection: new MonitorGroups(monitorGroups),
 		}));
 	},
 });

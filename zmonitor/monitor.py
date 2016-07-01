@@ -19,20 +19,13 @@ class MonitorEngine:
 
     def register_monitor(self, monitor_config):
         try:
-            monitor_class = getattr(monitors, monitor_config['monitor'])
-            monitor_name = monitor_config['name']
-            monitor = monitor_class(monitor_name, *monitor_config['monitor_params'])
+            monitor_class = getattr(monitors, monitor_config['class'])
+            monitor_attributes = monitor_config['attributes']
+            monitor_name = monitor_attributes['name']
+            monitor = monitor_class(monitor_name, *monitor_config['params'])
             monitor_item, created = MonitorItem.objects.get_or_create(
                     name=monitor_name,
-                    defaults={
-                        'source': monitor_config['source'],
-                        'description': monitor_config['description'],
-                        'arrival_interval' : monitor_config['arrival_interval'],
-                        'is_active' : monitor_config['is_active'],
-                        'status' : '',
-                        'notes' : '',
-                        'monitor_loaded': True,
-                        })
+                    defaults=monitor_attributes);
             if not created:
                 monitor_item.monitor_loaded = True
                 monitor_item.save()
@@ -46,7 +39,7 @@ class MonitorEngine:
         MonitorItem.objects.all().update(monitor_loaded=False)
         for monitor_config in config:
             self.register_monitor(monitor_config)
-            log.debug('Monitor Registered: {}'.format(monitor_config['name']))
+            log.debug('Monitor Registered: {}'.format(monitor_config['attributes']['name']))
         MonitorItem.objects.filter(monitor_loaded=False).delete()
 
     def start(self):

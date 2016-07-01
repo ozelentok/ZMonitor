@@ -1,15 +1,35 @@
 var Utils = {};
 
 Utils.timeIntervalToMs =  function(timeDiff) {
-	var timePattern = /(\d{2}):(\d{2}):(\d{2})/;
+	var timePattern = /(\d+)\s+(\d{2}):(\d{2}):(\d{2})/;
+	var timePattern2 = /(\d{2}):(\d{2}):(\d{2})/;
 	var patternMatch = timePattern.exec(timeDiff);
+	var matchesOffset = 0;
 	if (patternMatch === null) {
-		throw Error('String does not contain a time difference');
+		matchesOffset = 1;
+		patternMatch = timePattern2.exec(timeDiff);
+		if (patternMatch === null) {
+			throw Error('String does not contain a time difference');
+		}
 	}
-	var totalSeconds = parseInt(patternMatch[3], 10);
-	totalSeconds += parseInt(patternMatch[2], 10) * 60;
-	totalSeconds += parseInt(patternMatch[1], 10) * 3600;
-	return totalSeconds * 1000;
+	var days = matchesOffset ? '0': patternMatch[1];
+	var hours = patternMatch[2 - matchesOffset];
+	var minutes = patternMatch[3 - matchesOffset];
+	var seconds = patternMatch[4 - matchesOffset];
+	return Utils.timeMeasurmentsToMs(
+		parseInt(days, 10),
+		parseInt(hours, 10),
+		parseInt(minutes, 10),
+		parseInt(seconds, 10)
+	);
+};
+
+Utils.timeMeasurmentsToMs = function(days, hours, minutes, seconds) {
+	var value = days * 24;
+	value = (value + hours) * 60;
+	value = (value + minutes) * 60;
+	value = (value + seconds) * 1000;
+	return value;
 };
 
 Utils.formatDateTime = function(dateTimeValue) {
