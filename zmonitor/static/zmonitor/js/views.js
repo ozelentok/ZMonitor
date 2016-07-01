@@ -32,7 +32,9 @@ var MonitorItemView = Mn.ItemView.extend({
 			observe: ['last_arrival'],
 			onGet: function (values) {
 				if (values[0]) {
-					return this.formatDateTime(values[0]);
+					//return this.formatDateTime(values[0]);
+					return this.formatDateTime(values[0]) + '\n' +
+						this.formatCurrentTimeDiff(values[0]);
 				}
 				return 'Did not arrive';
 			},
@@ -42,7 +44,8 @@ var MonitorItemView = Mn.ItemView.extend({
 			observe: ['last_update'],
 			onGet: function (values) {
 				if (values[0]) {
-					return this.formatDateTime(values[0]);
+					return this.formatDateTime(values[0]) + '\n' +
+						this.formatCurrentTimeDiff(values[0]);
 				}
 				return 'No update';
 			},
@@ -90,7 +93,25 @@ var MonitorItemView = Mn.ItemView.extend({
 	},
 	formatDateTime: function(dateTimeValue) {
 		return moment(dateTimeValue).format('YYYY-MM-DD HH:mm:ss ZZ');
-	}
+	},
+	formatCurrentTimeDiff: function(dateTimeValue) {
+		var timeDiff = (Date.now() - moment(dateTimeValue)) / 1000
+		if (timeDiff < 1) {
+			return 'Just now'
+		} if (timeDiff < 60) {
+			return Math.round(timeDiff) + ' seconds ago';
+		}
+		timeDiff /= 60;
+		if (timeDiff < 60) {
+			return Math.round(timeDiff) + ' minutes ago';
+		}
+		timeDiff /= 60;
+		if (timeDiff < 24) {
+			return Math.round(timeDiff) + ' hours ago';
+		}
+		timeDiff /= 24;
+		return Math.round(timeDiff) + ' days ago';
+	},
 });
 
 var MonitorItemsView = Mn.CompositeView.extend({

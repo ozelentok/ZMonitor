@@ -9,4 +9,5 @@ tr:nth-child(even) {
 
 .monitor-item-last-arrival, .monitor-item-last-update {
 	font-weight: bold;
+	white-space: pre-line;
 }
