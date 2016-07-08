@@ -83,8 +83,8 @@ ZMonitorSocket.prototype.connect = function() {
 };
 
 ZMonitorSocket.prototype.initializeKeepAliveTimer = function() {
-	var KEEP_ALIVE_INTERVAL_MS = 60 * 1000;
-	var KEEP_ALIVE_TIMEOUT_MS = 180 * 1000;
+	var KEEP_ALIVE_INTERVAL_MS = 20 * 1000;
+	var KEEP_ALIVE_TIMEOUT_MS = 50 * 1000;
 	var self = this;
 	this.lastSocketCommunication = new Date();
 	if (this.hasOwnProperty('keepAliveTimer')) {

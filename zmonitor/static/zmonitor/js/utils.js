@@ -67,8 +67,9 @@ Utils.formatTimeDiff = function(timeDiffMs) {
 };
 
 Utils.graduallyIncreaseOpacity = function($el) {
-	$el.css('opacity', 0.1);
-	$el.animate({'opacity': 1}, 1200);
+	$el.animate({'opacity': 0.2}, 400, function() {
+		$el.animate({'opacity':	1}, 700);
+	});
 };
 
 Utils.requestNotificationsPermissions = function(callback) {
