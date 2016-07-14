@@ -22,14 +22,17 @@ class MonitorEngine:
             monitor_class = getattr(monitors, monitor_config['class'])
             monitor_attributes = monitor_config['attributes']
             monitor_name = monitor_attributes['name']
-            monitor = monitor_class(monitor_name, *monitor_config['params'])
-            monitor_item, created = MonitorItem.objects.get_or_create(
+            monitor_item, created = MonitorItem.objects.update_or_create(
                     name=monitor_name,
                     defaults=monitor_attributes);
+            MonitorItem.objects.filter(pk=monitor_item.pk).update(**monitor_attributes)
             if not created:
                 monitor_item.monitor_loaded = True
                 monitor_item.save()
-            self._monitors.append(monitor)
+            if monitor_item.is_active:
+                monitor = monitor_class(monitor_name, *monitor_config['params'])
+                self._monitors.append(monitor)
+                log.debug('Monitor Registered: {}'.format(monitor_name))
 
         except Exception as e:
             log.error('Failed to load monitor: {}\n{!r}'.format(e, monitor_config))
@@ -39,7 +42,6 @@ class MonitorEngine:
         MonitorItem.objects.all().update(monitor_loaded=False)
         for monitor_config in config:
             self.register_monitor(monitor_config)
-            log.debug('Monitor Registered: {}'.format(monitor_config['attributes']['name']))
         MonitorItem.objects.filter(monitor_loaded=False).delete()
 
     def start(self):

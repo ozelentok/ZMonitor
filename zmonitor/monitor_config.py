@@ -11,6 +11,7 @@ config = [
                 'arrival_interval': timedelta(seconds=125),
                 'is_active': True,
                 'group_name': 'Test1',
+                'notes': 'Your should monitor this',
             }
         },
         {

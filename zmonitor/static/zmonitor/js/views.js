@@ -45,6 +45,7 @@ var MonitorItemView = Mn.ItemView.extend({
 				return Utils.formatTimeDiff(Utils.timeIntervalToMs(values));
 			},
 		},
+		'.monitor-item-notes': 'notes',
 	},
 	onRender: function() {
 		this.stickit();

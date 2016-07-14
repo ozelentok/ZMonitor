@@ -7,7 +7,7 @@ class MonitorItemSerializer(serializers.ModelSerializer):
         model = MonitorItem
         fields = ('pk', 'name', 'source', 'description', 'status',
                 'last_arrival', 'last_update', 'arrival_interval',
-                'is_active', 'group_name',)
+                'is_active', 'notes', 'group_name',)
 
 class MonitorItemViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = MonitorItemSerializer

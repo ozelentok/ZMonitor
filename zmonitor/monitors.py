@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import glob
 import os
 from datetime import datetime
+import logging
 
 class BaseMonitor(ABC):
 
