@@ -20,3 +20,8 @@ tr:nth-child(even) {
 	margin-right: 20px;
 	padding-top: 8px;
 }
+
+.inactive-item {
+	opacity: 0.3;
+	text-decoration: line-through;
+}

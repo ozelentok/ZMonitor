@@ -9,7 +9,7 @@ config = [
                 'source': 'Local Computer',
                 'description': 'Files that create all the time',
                 'arrival_interval': timedelta(seconds=125),
-                'is_active': True,
+                'is_active': False,
                 'group_name': 'Test1',
                 'notes': 'Your should monitor this',
             }

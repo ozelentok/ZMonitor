@@ -59,6 +59,7 @@ var MonitorItemView = Mn.ItemView.extend({
 	},
 	onNewArrival: function($el) {
 		OpacityViewHandler.afterUpdate($el);
+		this.$el.toggleClass('inactive-item', !this.model.get('is_active'));
 		var lastArrival = moment(this.model.get('last_arrival'));
 		var msDiff = Date.now() - lastArrival;
 		var timeIntervalMs = Utils.timeIntervalToMs(this.model.get('arrival_interval'));
