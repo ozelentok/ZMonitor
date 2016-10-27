@@ -50,3 +50,4 @@ CACHE/
 # Sphinx documentation
 docs/_build/
 *.sqlite3
+env
