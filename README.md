@@ -3,8 +3,8 @@ Web app for monitoring your systems<br />
 The goal of this project is to allow anyone to monitor anything they need<br />
 Write your custom monitor class in python - allowing you to do anything you want<br />
 - Monitor a database for changes and availability
-- Monitor a connection to the internet
-The app is always connected to the server using web sockets and can notifiy the user using the browser notifications api
+- Monitor a connection to the internet<br />
+The app is always connected to the server using web sockets and can notifiy the user using the browser notifications api<br />
 In short, if you can code it, you can monitor it!<br />
 
 ###Existing Basic Monitors
