@@ -9,9 +9,9 @@ config = [
                 'source': 'Local Computer',
                 'description': 'Files that create all the time',
                 'arrival_interval': timedelta(seconds=125),
-                'is_active': False,
-                'group_name': 'Test1',
-                'notes': 'Your should monitor this',
+                'is_active': True,
+                'group_name': 'Most Important',
+                'notes': 'Your should monitor this'
             }
         },
         {
@@ -23,7 +23,7 @@ config = [
                 'description': 'Crazy log file',
                 'arrival_interval': timedelta(seconds=90),
                 'is_active': True,
-                'group_name': 'Test1',
+                'group_name': 'Most Important',
             }
         },
         {
@@ -35,7 +35,7 @@ config = [
                 'description': 'Log files',
                 'arrival_interval': timedelta(seconds=120),
                 'is_active': True,
-                'group_name': 'Test2',
+                'group_name': 'Logs Sections',
             }
         },
         {
@@ -46,8 +46,8 @@ config = [
                 'source': 'Local Computer',
                 'description': 'Home files',
                 'arrival_interval': timedelta(days=1, seconds=360),
-                'is_active': True,
-                'group_name': 'Test2',
+                'is_active': False,
+                'group_name': 'Logs Sections',
             }
         },
 ]
