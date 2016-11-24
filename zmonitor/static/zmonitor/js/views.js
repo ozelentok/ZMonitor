@@ -52,7 +52,7 @@ var MonitorItemView = Mn.ItemView.extend({
 		var RERENDER_INTERVAL_MAX = 30000;
 		var RERENDER_INTERVAL_MIN = 10000;
 		var self = this;
-    setInterval(function() { 
+		setInterval(function() {
 			self.model.trigger('change:last_arrival');
 			self.model.trigger('change:last_update');
 		}, _.random(RERENDER_INTERVAL_MIN, RERENDER_INTERVAL_MAX));
