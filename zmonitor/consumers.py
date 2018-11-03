@@ -1,5 +1,5 @@
 from channels.generic.websockets import JsonWebsocketConsumer
-import json
+
 
 class UpdatesServer(JsonWebsocketConsumer):
 
@@ -14,7 +14,7 @@ class UpdatesServer(JsonWebsocketConsumer):
 
     def receive(self, message, **kwargs):
         if message['type'] == 'keep-alive':
-            self.send({'type': 'keep-alive'});
+            self.send({'type': 'keep-alive'})
 
     def disconnect(cls, message, **kwargs):
         pass

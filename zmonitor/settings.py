@@ -99,7 +99,7 @@ COMPRESS_ENABLED = True
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSIONS_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
-        #'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
@@ -114,18 +114,18 @@ REST_FRAMEWORK = {
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-#    {
-#        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-#    },
-#    {
-#        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-#    },
-#    {
-#        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-#    },
-#    {
-#        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-#    },
+    #    {
+    #        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    #    },
+    #    {
+    #        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    #    },
+    #    {
+    #        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    #    },
+    #    {
+    #        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    #    },
 ]
 
 CHANNEL_LAYERS = {
@@ -177,4 +177,5 @@ USE_L10N = True
 
 USE_TZ = True
 
-MONITOR_CONFIGURATION_FILE_PATH = os.environ.get('MONITOR_CONFIG_FILE', 'zmonitor.monitor_config')
+MONITOR_CONFIGURATION_FILE_PATH = os.environ.get(
+    'MONITOR_CONFIG_FILE', 'zmonitor.monitor_config')

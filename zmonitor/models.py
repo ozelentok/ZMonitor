@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class MonitorItem(models.Model):
     name = models.CharField(max_length=200)
     source = models.CharField(max_length=200)

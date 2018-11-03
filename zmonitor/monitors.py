@@ -1,8 +1,8 @@
-from abc import ABC, abstractmethod
 import glob
 import os
+from abc import ABC, abstractmethod
 from datetime import datetime
-import logging
+
 
 class BaseMonitor(ABC):
 
@@ -30,6 +30,7 @@ class BaseMonitor(ABC):
     def status(self, value):
         self._status = value
 
+
 class FileExistenceMonitor(BaseMonitor):
     '''
     Monitor for file existence and creation
@@ -55,8 +56,8 @@ class FileExistenceMonitor(BaseMonitor):
         DATE_FORMAT = '%Y%m%d'
         DATE_SYMBOL = '$DATE'
         return [pattern.replace(DATE_SYMBOL,
-            datetime.now().strftime(DATE_FORMAT))
-            for pattern in self._glob_patterns]
+                                datetime.now().strftime(DATE_FORMAT))
+                for pattern in self._glob_patterns]
 
     def get_newest_file_paths(self):
         files_found = []
@@ -74,6 +75,7 @@ class FileExistenceMonitor(BaseMonitor):
         self.last_file_path = files_found[-1]
         self.status = 'Last File: {}'.format(self.last_file_path)
         return True
+
 
 class LogLinesMonitor(FileExistenceMonitor):
     '''
