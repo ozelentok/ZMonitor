@@ -5,7 +5,7 @@ import importlib
 import json
 import random
 from django.utils import timezone
-from channels import Group
+from channels.layers import get_channel_layer
 
 from . import settings
 from . import monitors
@@ -36,11 +36,10 @@ class MonitorEngine:
                 monitor = monitor_class(
                     monitor_name, *monitor_config['params'])
                 self._monitors.append(monitor)
-                log.debug('Monitor Registered: {}'.format(monitor_name))
-
-        except Exception as e:
-            log.error('Failed to load monitor: {}\n{!r}'.format(
-                e, monitor_config))
+                log.debug('Monitor registered: {}'.format(monitor_name))
+        except Exception:
+            log.exception('Failed to register monitor: {}'.format(
+                monitor_config))
 
     def register_monitors(self):
         config = self.get_configuation()
@@ -64,21 +63,27 @@ class MonitorEngine:
 
     @staticmethod
     async def monitor_check_wrapper(monitor):
+        channel_layer = get_channel_layer()
         while True:
-            result = monitor.check()
-            monitor_item = MonitorItem.objects.get(name=monitor.name)
-            monitor_item.last_update = timezone.now()
-            if result:
-                monitor_item.last_arrival = timezone.now()
-                monitor_item.status = monitor.status
-            monitor_item.save()
-            Group('updates').send({
-                'text': json.dumps({
-                    'type': 'item-change',
-                    'item-changes': MonitorItemSerializer(monitor_item).data,
+            try:
+                result = monitor.check()
+                monitor_item = MonitorItem.objects.get(name=monitor.name)
+                monitor_item.last_update = timezone.now()
+                if result:
+                    monitor_item.last_arrival = timezone.now()
+                    monitor_item.status = monitor.status
+                monitor_item.save()
+                await channel_layer.group_send('updates', {
+                    'text': json.dumps({
+                        'type': 'item-change',
+                        'item-changes': MonitorItemSerializer(monitor_item).data,
+                    })
                 })
-            })
-            await asyncio.sleep(random.randint(40, 80))
+            except Exception:
+                log.exception('Error during monitor {} check loop'.format(
+                    monitor))
+            finally:
+                await asyncio.sleep(random.randint(40, 80))
 
     def get_configuation(self):
         config_file_path = settings.MONITOR_CONFIGURATION_FILE_PATH

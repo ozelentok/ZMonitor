@@ -1,20 +1,14 @@
-from channels.generic.websockets import JsonWebsocketConsumer
+from channels.generic.websocket import JsonWebsocketConsumer
 
 
-class UpdatesServer(JsonWebsocketConsumer):
+class UpdatesConsumer(JsonWebsocketConsumer):
 
-    strict_ordering = False
-    slight_ordering = False
+    def connect(self):
+        self.accept()
 
-    def connection_groups(self, **kawrgs):
-        return ['updates']
-
-    def connect(self, message, **kwargs):
-        pass
-
-    def receive(self, message, **kwargs):
-        if message['type'] == 'keep-alive':
-            self.send({'type': 'keep-alive'})
+    def receive_json(self, content):
+        if 'type' in content and content['type'] == 'keep-alive':
+            self.send_json({'type': 'keep-alive'})
 
     def disconnect(cls, message, **kwargs):
         pass
